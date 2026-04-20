@@ -6,6 +6,9 @@ export function Weather() {
     const [weather, setWeather] = useState(null)
     const [loading, setLoading] = useState(false)
     const API_KEY = "5762c6a64bda6a2dd1aee744c2422e46"
+
+   
+
     const fetchWeather = async () => {
         setLoading(true);
         try {
@@ -16,6 +19,10 @@ export function Weather() {
             console.log("Error", error);
         }finally{
             setLoading(false)
+            useEffect(() => {
+        localStorage.setItem("my_tasks", JSON.stringify(city))
+        console.log("Saved to Local Storage")
+    }, [state])
         }
     }
 

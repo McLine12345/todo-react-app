@@ -4,7 +4,8 @@ const initialState = []
 const init = () => {
     
 const savedTasks = localStorage.getItem("my_tasks")
-return savedTasks ? JSON.parse(savedTasks) : []}
+return savedTasks ? JSON.parse(savedTasks) : []
+}
 
 
 
