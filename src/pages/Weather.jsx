@@ -1,28 +1,39 @@
 import { useEffect, useState } from "react"
 import { allCities } from "./Cities"
+import { useContext } from "react"
+import { ThemeContext } from "./ThemeContext"
+
 export function Weather() {
 
-    const [city, setCity] = useState("Kyiv")
+    const {isDarkMode, ToggleTheme} = useContext(ThemeContext)
+    const [city, setCity] = useState(() => {
+        return localStorage.getItem("last_city") || "Kyiv"
+    })
     const [weather, setWeather] = useState(null)
     const [loading, setLoading] = useState(false)
     const API_KEY = "5762c6a64bda6a2dd1aee744c2422e46"
 
    
 
-    const fetchWeather = async () => {
+    const fetchWeather = async () => { 
+        if (!city) return;
         setLoading(true);
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=eng`)
             const data = await response.json()
-            setWeather(data);
+            if (data.cod === 200) {
+                setWeather(data);
+                localStorage.setItem("last_city", city)
+
+            
+            } else { 
+                setWeather(data)
+            }
+
         } catch (error) {
             console.log("Error", error);
         }finally{
             setLoading(false)
-            useEffect(() => {
-        localStorage.setItem("my_tasks", JSON.stringify(city))
-        console.log("Saved to Local Storage")
-    }, [state])
         }
     }
 
@@ -48,6 +59,12 @@ export function Weather() {
         {allCities.map((c, index) => ( <option key={index} value ={c} /> ))} 
     </datalist>
 
+    <div className={isDarkMode ? "bg-slate-900 text-white" : "bg-blue-50 text-black"}>
+        <button onClick={ToggleTheme}>
+            {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+    </div>
+
 
     
     <button className="bg-gray-500 rounded-lg transform-all duration-300 p-2 px-3 text-white hover:scale-105 hover:bg-gray-700 active:scale-95"
@@ -62,9 +79,14 @@ export function Weather() {
         (city == "Moscow") ? <h3 className="bg-red-500 text-white px-5">
             This place should not exist
         </h3> : 
-        <div className="text-center bg-white p-6 rounded-2xl shadow-lg w-full">
+        <div className=" items-center flex text-center bg-white p-6 rounded-2xl shadow-lg w-full">
         {console.log(weather)}
         <h3 className="text-4xl font-black text-gray-800">{weather.main.temp} °C</h3>
+        <img src ={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
+        alt="weather status"
+        className="w-32 h-32 "
+        
+        ></img>
         </div>
     ) : (
         <p>Can't find the city</p>
