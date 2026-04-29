@@ -1,20 +1,27 @@
 
+import { useContext } from "react"
 import Tasks from "./pages/Tasks"
+import { Home } from "./pages/Cinema"
 import { Weather } from "./pages/Weather"
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
+import { ThemeContext } from "./pages/ThemeContext"
 function App() {
+  const {isDarkMode, ToggleTheme} = useContext(ThemeContext);
+
   return (
     <BrowserRouter>
-    <div className="min-h-screen bg-gray-100">
+    <div className={isDarkMode ? "bg-slate-900 text-white min-h-screen transition colors duration-500" :  "min-h-screen bg-gray-100 text-black transition-colors duration-500"}>
       <nav className="bg-white shadow-lg mb-6 flex justify-center gap-8">
-        <Link   to="/" className="text-purple-600 font-bold hover:text-purple-800 transition">
+        <Link   to="/" className="text-gray-600 font-bold hover:text-purple-800 transition">
         Tasks
         </Link>
-        <Link to="/weather"  className="text-blue-600 font-bold hover:text-blue-800 transition">Weather</Link>
+        <Link to="/weather"  className="text-gray-600 font-bold hover:text-blue-800 transition">Weather</Link>
+        <Link to="/home" className="text-gray-600 font-bold hover:text-green-800 transition">Cinema</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Tasks />} />
         <Route path="/weather" element={<Weather />} />
+        <Route path="home" element={<Home/>} />
 </Routes>
 
 

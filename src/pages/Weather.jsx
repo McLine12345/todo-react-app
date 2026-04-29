@@ -12,7 +12,7 @@ export function Weather() {
     const [weather, setWeather] = useState(null)
     const [loading, setLoading] = useState(false)
     const API_KEY = "5762c6a64bda6a2dd1aee744c2422e46"
-
+    
    
 
     const fetchWeather = async () => { 
@@ -41,8 +41,9 @@ export function Weather() {
         fetchWeather()
     }, [])
 
-    return <div className="flex flex-col items-center p-8 bg-blue-50 rounded-3xl shadow-inner max-w-md mx-auto mt-10">
-        <h2>
+    return <div className={`flex flex-col items-center p-8 rounded-3xl shadow-inner max-w-md mx-auto mt-10 transition-colors duration-500 ${
+    isDarkMode ? "bg-gray-700 text-white" : "bg-blue-50 text-black"}`}>
+        <h2 className={isDarkMode ? "!text-white" : "!text-black"}>
             Weather Broadcast
         </h2> 
         <div>
@@ -59,11 +60,7 @@ export function Weather() {
         {allCities.map((c, index) => ( <option key={index} value ={c} /> ))} 
     </datalist>
 
-    <div className={isDarkMode ? "bg-slate-900 text-white" : "bg-blue-50 text-black"}>
-        <button onClick={ToggleTheme}>
-            {isDarkMode ? "☀️ Light" : "🌙 Dark"}
-        </button>
-    </div>
+    
 
 
     
@@ -79,14 +76,20 @@ export function Weather() {
         (city == "Moscow") ? <h3 className="bg-red-500 text-white px-5">
             This place should not exist
         </h3> : 
-        <div className=" items-center flex text-center bg-white p-6 rounded-2xl shadow-lg w-full">
+        <div className={`items-center flex text-center p-6 rounded-2xl shadow-lg w-full ${isDarkMode ? "bg-gray-500" : "bg-white"}`}>
         {console.log(weather)}
-        <h3 className="text-4xl font-black text-gray-800">{weather.main.temp} °C</h3>
+        <h3 className={`text-4xl font-black ${isDarkMode ? "text-gray-300" : "text-gray-800"}`}>{weather.main.temp} °C</h3>
         <img src ={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
         alt="weather status"
         className="w-32 h-32 "
         
         ></img>
+<div className={isDarkMode ? "bg-slate-900 text-white" : "bg-blue-50 text-black"}>
+        <button onClick={ToggleTheme}>
+            {isDarkMode ? "☀️ Light" : "🌙 Dark"}
+        </button>
+    </div>
+        
         </div>
     ) : (
         <p>Can't find the city</p>

@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
-
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeContext";
 const initialState = []
 const init = () => {
     
@@ -7,9 +8,8 @@ const savedTasks = localStorage.getItem("my_tasks")
 return savedTasks ? JSON.parse(savedTasks) : []
 }
 
-
-
 function reducer (state, action){
+
     switch(action.type){
         case "Add_Task": {
         return [...state, {id: Date.now(), completed : false, text :action.payload, isEditing: false}]
@@ -43,14 +43,11 @@ function reducer (state, action){
 } 
 
 export default function Tasks () {
-
-
     
-
+    const {isDarkMode, ToggleTheme} = useContext(ThemeContext)
     const [text, setText] = useState("")
-
-    
     const [state, dispatch ] = useReducer(reducer, initialState, init)
+
 
     useEffect(() => {
         localStorage.setItem("my_tasks", JSON.stringify(state))
@@ -64,11 +61,15 @@ export default function Tasks () {
         setText("")
     }
     return (
-        <div className="min-h-screen bg-gray-50 py-10 px-4 flex justify-center">
-            <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 h-fit">
+        <div className={`min-h-screen py-10 px-4 flex justify-center ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
+
+            
+            <div className={`max-w-2xl w-full rounded-2xl shadow-xl p-8 h-fit ${isDarkMode ? "bg-gray-500" : "bg-white" }`}>
                 <div>
 
-
+<div className={isDarkMode ? "bg-slate-900 text-whit w-20 rounded-lg" : "bg-gray-300 text-black w-20 rounded-lg "}>
+                <button onClick={ToggleTheme}>{isDarkMode ? "☀️ Light" : "🌙 Dark"}</button>
+                 </div>
             <input 
             className=" transition-all duration-300
             border-purple hover:border-purple-600 
@@ -82,9 +83,9 @@ export default function Tasks () {
             onClick={handleAdd}>ADD TASK</button>
 
 
-            <ul  className="mt-8 space-y-3  w-full ">
+            <ul  className="mt-8 space-y-3  w-full !text-white">
                 {state.map((task) =>  ( 
-                    <div key={task.id} className="flex items-center gap-4 p-2 border-b">
+                    <div key={task.id} className="flex items-center gap-4 p-2 border-b ">
                             {task.isEditing ? 
                             (
                                 <>
@@ -102,6 +103,7 @@ export default function Tasks () {
                         dispatch({type: "ToggleEdit_Task", payload: task.id})
                     }  }}
                                 />
+                                
                             <button 
                             className=" transtition-all duration-300 hover:bg-green-600 hover:scale-105 active:scale-95 easy-in-out  bg-green-500 rounded-lg px-10 text-white"
                             onMouseDown={(e) => {e.preventDefault();
@@ -118,9 +120,13 @@ export default function Tasks () {
                             ) : ( 
                                 < >
                                 
-                                <span className={`flex-1  truncate text-lg transition-all duration-300 ${task.completed ? "line-through text-gray-400 italic" : "text-gray-700 font-medium"}`}>
-                                    {task.text} 
-                                </span>
+                                <span className={`flex-1 truncate text-lg transition-all duration-300 ${
+    task.completed 
+        ? "line-through text-gray-300 italic" 
+        : isDarkMode ? "text-white font-medium" : "text-gray-700 font-medium"
+}`}>
+    {task.text}
+</span>
                                 {task.completed && (
                                     <span className="text-[10px] uppercase tracking-widest text-green-500 font-bold">
                                         Completed
@@ -135,6 +141,7 @@ export default function Tasks () {
                                 </>
                             )
                         }
+                        
                         <button 
                         className="bg-red-500 transition-all text-white rounded-lg px-2 hover:bg-red-600 hover:scale-105"
                         onClick= {() => dispatch({type: "Delete_Task", payload: task.id})}>Delete Task</button>
@@ -145,8 +152,12 @@ export default function Tasks () {
                         className="w-5 h-5 accent-purple-500 cursor-pointer transition-transform active:scale-90"
                         />
                         </div>
+                        
+                        
                 ))}
             </ul>
+
+
         </div>
         </div>
         </div>
