@@ -1,5 +1,6 @@
 
 import { useContext } from "react"
+import { MovieDetail } from "./pages/MovieDetail"
 import Tasks from "./pages/Tasks"
 import { Home } from "./pages/Cinema"
 import { Weather } from "./pages/Weather"
@@ -16,12 +17,13 @@ function App() {
         Tasks
         </Link>
         <Link to="/weather"  className="text-gray-600 font-bold hover:text-blue-800 transition">Weather</Link>
-        <Link to="/home" className="text-gray-600 font-bold hover:text-green-800 transition">Cinema</Link>
+        <Link to="/movie" className="text-gray-600 font-bold hover:text-green-800 transition">Cinema</Link>
       </nav>
       <Routes>
         <Route path="/" element={<Tasks />} />
         <Route path="/weather" element={<Weather />} />
-        <Route path="home" element={<Home/>} />
+        <Route path="/movie" element={<Home/>} />
+        <Route path="/movie/:id" element={<MovieDetail />}/>
 </Routes>
 
 
