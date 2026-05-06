@@ -7,6 +7,8 @@ import { Weather } from "./pages/Weather"
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
 import { ThemeContext } from "./pages/ThemeContext"
 function App() {
+  const lastWatched = localStorage.getItem("lastWatched");
+  const lastId = lastWatched ? JSON.parse(lastWatched).id : null;
   const {isDarkMode, ToggleTheme} = useContext(ThemeContext);
 
   return (
@@ -17,8 +19,14 @@ function App() {
         Tasks
         </Link>
         <Link to="/weather"  className="text-gray-600 font-bold hover:text-blue-800 transition">Weather</Link>
-        <Link to="/movie" className="text-gray-600 font-bold hover:text-green-800 transition">Cinema</Link>
-      </nav>
+        <Link 
+  to={lastId ? `/movie/${lastId}` : "/movie"} 
+  className="text-gray-600 font-bold hover:text-green-800 transition"
+>
+  Cinema
+</Link>
+</nav>
+  
       <Routes>
         <Route path="/" element={<Tasks />} />
         <Route path="/weather" element={<Weather />} />

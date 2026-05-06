@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useEffectEvent } from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useSearchParams } from "react-router-dom"
@@ -9,7 +9,7 @@ export function Home () {
     const [list, setList] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchParams, setSearchParams] = useSearchParams()
-    const page = Number(searchParams.get("page")) || 1;
+    const page = Number(searchParams.get("page")) || 1; 
     const [searchTerm, setSearchTerm] = useState("")
 
     const fetchSearch = async () => {
@@ -31,19 +31,32 @@ export function Home () {
             const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=eng-ENG&page=${page}`)
             const data = await response.json()
             setList(data.results)
-            setPage(page)
-            localStorage.setItem("page", page)
         } catch (error){
             console.log("ERROR BRAH", error)
         } finally { 
             setLoading(false)
         }
     }
+
+    const handlePageChange = (newPage) => {
+        setSearchParams({page:newPage});
+    }
+    useEffect(() => {
+        if (searchTerm) {
+            localStorage.setItem("lastSearch", searchTerm)
+        }
+    })
+    useEffect(()=> {
+        const savedSearch = localStorage.getItem("lastSearch");
+        if (savedSearch && !searchTerm) {
+            setSearchTerm(savedSearch)
+        }
+    }, [])
+
     useEffect(() => {
         fetchData() 
-        localStorage.setItem("page", page)
         window.scrollTo(0, 0)
-    }, [page])
+    }, [searchParams])
     return (
         <div>
             <input
@@ -88,14 +101,14 @@ export function Home () {
 <div className="flex justify-center items-center gap-6 mt-10 mb-10">
                 <button
                 disabled={page === 1}
-                onClick={() => setPage(prev => prev - 1 )}
+                onClick={() => handlePageChange(page - 1)}
                 className="px-6 py-2 bg-purple-600 rounded-lg disabled:bg-gray-700 disabled cursor-not-allowed hover:bg-purple-700 transition"
                 >Back</button>
                 <span className="text-xl font-bold text-white">
                     Page {page}
                 </span>
                 <button 
-                onClick={() => setPage(prev => prev + 1)}
+                onClick={() => handlePageChange(page +   1)}
                 className="px-6 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition"
                 >Forward</button>
             </div>
