@@ -1,17 +1,27 @@
 
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 import { MovieDetail } from "./pages/MovieDetail"
 import Tasks from "./pages/Tasks"
 import { Home } from "./pages/Cinema"
 import { Weather } from "./pages/Weather"
 import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
 import { ThemeContext } from "./pages/ThemeContext"
+import { useLocation } from "react-router-dom"
 function App() {
-  const lastWatched = localStorage.getItem("lastWatched");
-  const lastId = lastWatched ? JSON.parse(lastWatched).id : null;
+  
   const {isDarkMode, ToggleTheme} = useContext(ThemeContext);
-
+  const location = useLocation();
+  const [lastId, setLastId] = useState(null);
+  useEffect(() => {
+    const saved = localStorage.getItem("lastWatched")
+    if (saved) {
+      setLastId(JSON.parse(saved).id)
+    } else {
+      setLastId(null);
+    }
+  }, [location])
   return (
+    
     <BrowserRouter>
     <div className={isDarkMode ? "bg-slate-900 text-white min-h-screen transition colors duration-500" :  "min-h-screen bg-gray-100 text-black transition-colors duration-500"}>
       <nav className="bg-white shadow-lg mb-6 flex justify-center gap-8">
@@ -39,6 +49,7 @@ function App() {
     </BrowserRouter>
     
   )
+  
 }
 
 export default App;
