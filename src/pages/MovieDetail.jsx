@@ -10,14 +10,31 @@ export function MovieDetail() {
         localStorage.removeItem("lastWatched")
         navigate("/movie")
     }
-
+    const [like, setLike] = useState(false)
+    const togglLike = () => {
+        const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || []
+        let updated;
+        if (like) {
+            updated = savedFavorites.filter(item => item.id !== movie.id);
+            setLike(false)
+        } else {
+            updated = [...savedFavorites, movie];
+            setLike(true)
+        }
+        localStorage.setItem("favorites", JSON.stringify(updated))
+        
+    }
    useEffect(() => {
         fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=eng-ENG`)
         .then(res => res.json())
         .then(data => {
             setMovie(data);
             localStorage.setItem("lastWatched", JSON.stringify(data));
-        }); 
+         
+
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const isAlreadyLiked = favorites.some(fav => fav.id === data.id);
+        setLike(isAlreadyLiked) });
     }, [id]);
 
     if (!movie) return <h2 className="text-white text-center mt-10">Loading</h2>
@@ -39,6 +56,9 @@ export function MovieDetail() {
                         <span className="bg-yellow-500 text-black px-3 py-1 rounded-full font-bold">
                             Rating: {movie.vote_average.toFixed(1)}
                         </span>
+                        <button 
+                        onClick={()=> togglLike()}
+                        className="bg-red-500 text-white p-2 rounded-xl flex transition hover:scale-105 hover:bg-red-700 active:scale-95 mt-10" >{like ? `Delete from Favorite` : `Add to Favorite`}</button>
                     </div>
                 </div>
             </div>

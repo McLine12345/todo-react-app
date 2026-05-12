@@ -2,6 +2,7 @@ import { useEffect, useEffectEvent } from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 export function Home () {   
 
     const API_KEY = "233838ce34f617364018d2c70d0ea24e"
@@ -11,6 +12,7 @@ export function Home () {
     const [searchParams, setSearchParams] = useSearchParams()
     const page = Number(searchParams.get("page")) || 1; 
     const [searchTerm, setSearchTerm] = useState("")
+    const navigate = useNavigate()
 
     const fetchSearch = async () => {
         setLoading(true)
@@ -59,18 +61,40 @@ export function Home () {
     }, [searchParams])
     return (
         <div>
-            <input
-            className=""
-            placeholder="Enter the movie..."
-            onChange={(e) => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            type="text"
-            />
-            <button
-            onClick={fetchSearch}
-            className="font -bold transition-all duration-300 hover:scale-105 hover:bg-gray-900 bg-gray-700 active:scale-95 rounded-lg p-2"
-            >Search</button>
-            <h1 className="!text-white">Movie list</h1>
+        {/* Контейнер для навигации/поиска */}
+        <div className="flex items-center justify-between mb-8 w-full">
+            
+            {/* 1. Пустой блок слева для идеального центрирования (баланс) */}
+            <div className="w-1/4"></div>
+
+            {/* 2. Центрированный поиск */}
+            <div className="flex gap-2 justify-center w-2/4">
+                <input
+                    className="text-white p-2 rounded-lg text-black  max-w-md"
+                    placeholder="Enter the movie..."
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={searchTerm}
+                    type="text"
+                />
+                <button
+                    onClick={fetchSearch}
+                    className="font-bold transition-all duration-300 hover:scale-105 hover:bg-gray-900 bg-gray-700 active:scale-95 rounded-lg p-2"
+                >
+                    Search
+                </button>
+            </div>
+
+            {/* 3. Кнопка Favourites справа */}
+            <div className="w-1/4 flex justify-end">
+                <button 
+                className="bg-yellow-500 font-bold  rounded-lg p-2 hover:bg-yellow-600 transition mr-10"
+                onClick={()=> navigate("/favourites")}         >
+                    Favourites
+                </button>
+            </div>
+        </div>
+
+        <h1 className="!text-white text-3xl font-bold mb-6">Movie list</h1>
            { loading ? (
             <h2>Loading movies...</h2>
            ) : (

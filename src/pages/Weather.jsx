@@ -60,10 +60,6 @@ export function Weather() {
         {allCities.map((c, index) => ( <option key={index} value ={c} /> ))} 
     </datalist>
 
-    
-
-
-    
     <button className="bg-gray-500 rounded-lg transform-all duration-300 p-2 px-3 text-white hover:scale-105 hover:bg-gray-700 active:scale-95"
     onClick={fetchWeather}>
         Search
