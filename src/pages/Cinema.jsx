@@ -13,6 +13,11 @@ export function Home () {
     const page = Number(searchParams.get("page")) || 1; 
     const [searchTerm, setSearchTerm] = useState("")
     const navigate = useNavigate()
+    const [liked, setLiked] = useState(false)
+    const [favors, setFavors] = useState(() => {
+        const saved = localStorage.getItem("favorites");
+        return saved ? JSON.parse(saved) : [];
+    });
 
     const fetchSearch = async () => {
         setLoading(true)
@@ -38,6 +43,17 @@ export function Home () {
         } finally { 
             setLoading(false)
         }
+    }
+    const toggleLike = (movie, isLiked) => {
+        let updated 
+        if (isLiked) {
+            updated = favors.filter(item => item.id !== movie.id)
+        } else { 
+            updated = [...favors, movie]            
+        }
+        localStorage.setItem("favorites", JSON.stringify(updated))
+        setFavors(updated)
+        
     }
 
     const handlePageChange = (newPage) => {
@@ -99,7 +115,10 @@ export function Home () {
             <h2>Loading movies...</h2>
            ) : (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-5">
-                {list.map((movie) => (
+                {list.map((movie) => {
+                    const isLiked = favors ? favors.some(fav => fav.id === movie.id) : false;
+                    
+                    return (
                        <div
                        key={movie.id}
                        className="bg-gray-800 rounded-xl overflow-hidden shadow-lg transition-transform hover:scale-105 duration-300"
@@ -117,9 +136,11 @@ export function Home () {
                         <div className="flex items-center mt-2">
                     <span className="!text-yellow-400 mr-1">★</span>
                     <span className="!text-yellow-300 text-xs">{movie.vote_average}</span>
+                    <button onClick={()=>toggleLike(movie, isLiked)}
+                    className="mx-10 transition-all hover:scale-105 active:scale-95">{isLiked ? `♥️` : `♡`}</button>
                 </div>
                        </div>
-                ))}
+)})}
             </div>
            )}
 <div className="flex justify-center items-center gap-6 mt-10 mb-10">
