@@ -8,7 +8,7 @@ export function MovieDetail() {
     const navigate = useNavigate()
     const goBack = () => {
         localStorage.removeItem("lastWatched")
-        navigate("/movie")
+        navigate(-1)
     }
     const [like, setLike] = useState(false)
     const togglLike = () => {
@@ -58,7 +58,8 @@ export function MovieDetail() {
                         </span>
                         <button 
                         onClick={()=> togglLike()}
-                        className="bg-red-500 text-white p-2 rounded-xl flex transition hover:scale-105 hover:bg-red-700 active:scale-95 mt-10" >{like ? `Delete from Favorite` : `Add to Favorite`}</button>
+                        className="bg-red-500 text-white p-2 rounded-xl flex transition hover:scale-105 hover:bg-red-700 active:scale-95 mt-10" >
+                            {like ? `Delete from Favorite` : `Add to Favorite`}</button>
                     </div>
                 </div>
             </div>

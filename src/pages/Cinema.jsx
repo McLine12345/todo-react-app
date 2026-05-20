@@ -57,13 +57,20 @@ export function Home () {
     }
 
     const handlePageChange = (newPage) => {
-        setSearchParams({page:newPage});
+        const params = {page: newPage}
+        if (searchTerm) {
+            params.query = searchTerm
+        }
+        setSearchParams(params);
     }
     useEffect(() => {
         if (searchTerm) {
             localStorage.setItem("lastSearch", searchTerm)
+            
+        }else { 
+            localStorage.removeItem("lastSearch")
         }
-    })
+    }, [searchTerm])
     useEffect(()=> {
         const savedSearch = localStorage.getItem("lastSearch");
         if (savedSearch && !searchTerm) {
@@ -72,7 +79,13 @@ export function Home () {
     }, [])
 
     useEffect(() => {
-        fetchData() 
+        const queryInUrl = searchParams.get("query");
+
+        if (queryInUrl || searchTerm) {
+            fetchSearch()
+        }else {
+            fetchData()
+        }
         window.scrollTo(0, 0)
     }, [searchParams])
     return (
@@ -104,8 +117,8 @@ export function Home () {
             <div className="w-1/4 flex justify-end">
                 <button 
                 className="bg-yellow-500 font-bold  rounded-lg p-2 hover:bg-yellow-600 transition mr-10"
-                onClick={()=> navigate("/favourites")}         >
-                    Favourites
+                onClick={()=> navigate("/favorites")}         >
+                    Favorites
                 </button>
             </div>
         </div>
