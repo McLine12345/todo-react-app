@@ -8,6 +8,7 @@ import { Routes, Route, Link} from "react-router-dom"
 import { ThemeContext } from "./pages/ThemeContext"
 import { useLocation } from "react-router-dom"
 import Favorites from "./pages/Favorites"
+import Racedata from "./pages/F1"
 function App() {
   
   const {isDarkMode, ToggleTheme} = useContext(ThemeContext);
@@ -34,6 +35,7 @@ function App() {
 >
   Cinema
 </Link> 
+<Link to="/racing" className="text-gray-600 font-bold hover:text-blue-800 transition">Race Info</Link>
 </nav>
   
       <Routes>
@@ -42,6 +44,7 @@ function App() {
         <Route path="/movie" element={<Home/>} />
         <Route path="/movie/:id" element={<MovieDetail />}/>
         <Route path = "/favorites" element={<Favorites/>}/>
+        <Route path = "/racing" element={<Racedata/>}/>
 </Routes>
 
 
